@@ -103,6 +103,6 @@ theme: landscape
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://github.com/freewilly123/blog # https://bitbucket.org/JohnSmith/johnsmith.bitbucket.io
+  repo: https://https://github.com/freewilly123/freewilly.github.io # https://bitbucket.org/JohnSmith/johnsmith.bitbucket.io
   branch: gh-pages
   message: 
