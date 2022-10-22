@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>Markdown常用语法</title>
+    <link href="/2022/10/22/Markdown%E5%B8%B8%E7%94%A8%E8%AF%AD%E6%B3%95/"/>
+    <url>/2022/10/22/Markdown%E5%B8%B8%E7%94%A8%E8%AF%AD%E6%B3%95/</url>
+    
+    <content type="html"><![CDATA[<p>Markdown 目录：<br>[TOC]</p><p>Markdown 标题：</p><h1 id="这是-H1"><a href="#这是-H1" class="headerlink" title="这是 H1"></a>这是 H1</h1><h2 id="这是-H2"><a href="#这是-H2" class="headerlink" title="这是 H2"></a>这是 H2</h2><h3 id="这是-H3"><a href="#这是-H3" class="headerlink" title="这是 H3"></a>这是 H3</h3><p>Markdown 列表：</p><ul><li>列表项目</li></ul><ol><li>列表项目</li></ol><p><em>斜体</em>或_斜体_<br><strong>粗体</strong><br><em><strong>加粗斜体</strong></em><br><del>删除线</del></p><p>Markdown 插入链接：<br><a href="%E9%93%BE%E6%8E%A5%E7%BD%91%E5%9D%80" title="标题">链接文字</a></p><p>Markdown 插入图片：<br><img src="/path/to/img.jpg" alt="alt text" title="Title"></p><p>Markdown 插入代码块：<br>    <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/python3</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Hello, World!&quot;</span>);<br></code></pre></td></tr></table></figure></p><p>Markdown 引用：</p><blockquote><p>引用内容</p></blockquote><h2 id="Markdown-分割线："><a href="#Markdown-分割线：" class="headerlink" title="Markdown 分割线："></a>Markdown 分割线：</h2><p>Markdown 换行：<br><br></p><p>Markdown 段首缩进：<br>&ensp; or &#8194; 表示一个半角的空格<br>&emsp; or &#8195;  表示一个全角的空格<br>&emsp;&emsp; 两个全角的空格（用的比较多）<br>&nbsp; or &#160; 不断行的空白格</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>uncategorized</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Markdown</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Mongodb Agrregation</title>
+    <link href="/2022/10/22/Agrregation/"/>
+    <url>/2022/10/22/Agrregation/</url>
+    
+    <content type="html"><![CDATA[<!-- toc --><ul><li><a href="#Aggregation-Pipeline">Aggregation Pipeline</a><ul><li><a href="#Expressions">Expressions</a></li></ul></li><li><a href="#Updates-with-Aggregation-Pipeline">Updates with Aggregation Pipeline</a></li></ul><!-- tocstop --><h2 id="Aggregation-Pipeline"><a href="#Aggregation-Pipeline" class="headerlink" title="Aggregation Pipeline"></a>Aggregation Pipeline</h2><h3 id="Expressions"><a href="#Expressions" class="headerlink" title="Expressions"></a>Expressions</h3><p>Expressions can include field paths,literals,system variables,expression objects, and expression operators. Expressions can be nested.</p><ol><li><p>Field paths<br> a dollar sign $. “$user”,”$user.name”</p></li><li><p>Literals<br>Literals can be of any type. However, MongoDB parses string literals that start with a dollar sign $ as a path to a field and numeric/boolean literals in expression objects as projection flags. To avoid parsing literals, use the $literal expression.</p></li><li><p>System variables<br>To access variables, prefix the variable name with $$. For example:$$NOW,$$ROOT,$$REMOVE</p></li><li><p>Expression Objects</p><pre><code class="hljs"> &#123; &lt;field1&gt;: &lt;expression1&gt;, ... &#125;</code></pre></li><li><p>Operator Expressions<br>Operator expressions are similar to functions that take arguments. In general, these expressions take an array of arguments and have the following form:</p><pre><code class="hljs"> &#123; &lt;operator&gt;: [ &lt;argument1&gt;, &lt;argument2&gt; ... ] &#125;</code></pre></li></ol><h2 id="Updates-with-Aggregation-Pipeline"><a href="#Updates-with-Aggregation-Pipeline" class="headerlink" title="Updates with Aggregation Pipeline"></a>Updates with Aggregation Pipeline</h2><ul><li>$addFields     <figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xquery">&#123; <span class="hljs-variable">$addFields:</span> &#123; <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">newField</span>&gt;</span>: </span><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">expression</span>&gt;</span>, ... &#125; &#125;</span><br></code></pre></td></tr></table></figure></li><li>$set (The $set stage is an alias for $addFields ) Can be used for Overwriting an existing field   <figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs haxe">&#123; $<span class="hljs-keyword">set</span>: <span class="hljs-type"></span>&#123; &lt;<span class="hljs-keyword">new</span><span class="hljs-type">Field</span>&gt;: <span class="hljs-type"></span>&lt;expression&gt;, ... &#125; &#125;<br></code></pre></td></tr></table></figure></li><li>$project  <figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs lasso">&#123; $project: &#123; <span class="hljs-string">&quot;&lt;field1&gt;&quot;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&quot;&lt;field2&gt;&quot;</span>: <span class="hljs-number">0</span>, <span class="hljs-params">...</span> &#125; &#125; <span class="hljs-comment">// Return all but the specified fields </span><br></code></pre></td></tr></table></figure><ul><li>Conditionally Exclude Fields<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs php">  db.books.<span class="hljs-title function_ invoke__">aggregate</span>( [<br>&#123;<br>  <span class="hljs-variable">$project</span>: &#123;<br> <span class="hljs-attr">title</span>: <span class="hljs-number">1</span>,<br> <span class="hljs-string">&quot;author.first&quot;</span>: <span class="hljs-number">1</span>,<br> <span class="hljs-string">&quot;author.last&quot;</span> : <span class="hljs-number">1</span>,<br> <span class="hljs-string">&quot;author.middle&quot;</span>: &#123;<br>    <span class="hljs-variable">$cond</span>: &#123;<br>       <span class="hljs-attr">if</span>: &#123; <span class="hljs-variable">$eq</span>: [ <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;<span class="hljs-subst">$author</span>.middle&quot;</span> ] &#125;,<br>       <span class="hljs-attr">then</span>: <span class="hljs-string">&quot;$<span class="hljs-subst">$REMOVE</span>&quot;</span>,<br>       <span class="hljs-attr">else</span>: <span class="hljs-string">&quot;<span class="hljs-subst">$author</span>.middle&quot;</span><br>         &#125;<br>         &#125;<br>    &#125;<br> &#125;<br>] )<br></code></pre></td></tr></table></figure></li></ul></li><li>$unset<pre><code class="hljs">  &#123; $unset: [ &quot;&lt;field1&gt;&quot;, &quot;&lt;field2&gt;&quot;, ... ] &#125;</code></pre></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>Mongodb</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Mongodb</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="/2022/10/21/hello-world/"/>
+    <url>/2022/10/21/hello-world/</url>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  
+</search>
