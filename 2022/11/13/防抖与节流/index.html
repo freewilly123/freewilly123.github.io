@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://gitee.com/qlHuo/BlogPic/raw/master/img/20201001115350.png">
 <meta property="article:published_time" content="2022-11-12T22:26:20.000Z">
-<meta property="article:modified_time" content="2022-11-12T22:37:00.276Z">
+<meta property="article:modified_time" content="2022-11-12T22:44:03.457Z">
 <meta property="article:author" content="Xin Lu">
 <meta property="article:tag" content="JS">
 <meta name="twitter:card" content="summary_large_image">
@@ -276,16 +276,17 @@
               <div class="markdown-body">
                 
                 <p>闭包的典型应用就是函数防抖和节流，本文详细介绍函数防抖和节流的应用场景和实现。</p>
-<p>函数防抖（debounce）<br>函数防抖，就是指触发事件后，在 n 秒后只能执行一次，如果在 n 秒内又触发了事件，则会重新计算函数的执行时间。</p>
+<h2 id="函数防抖（debounce）"><a href="#函数防抖（debounce）" class="headerlink" title="函数防抖（debounce）"></a>函数防抖（debounce）</h2><p>函数防抖，就是指触发事件后，在 n 秒后只能执行一次，如果在 n 秒内又触发了事件，则会重新计算函数的执行时间。</p>
 <p>简单的说，当一个动作连续触发，只执行最后一次。</p>
 <p>打个比方，坐公交，司机需要等最后一个人进入才能关门。每次进入一个人，司机就会多等待几秒再关门。</p>
-<p>函数节流（throttle）<br>限制一个函数在一定时间内只能执行一次</p>
+<h2 id="函数节流（throttle）"><a href="#函数节流（throttle）" class="headerlink" title="函数节流（throttle）"></a>函数节流（throttle）</h2><p>限制一个函数在一定时间内只能执行一次</p>
 <p>举个例子，乘坐地铁，过闸机时，每个人进入后3秒后门关闭，等待下一个人进入。</p>
 <p>为了方便理解，我们首先通过一个可视化的工具，感受一下三种环境（正常情况、函数防抖情况 debounce、函数节流 throttle）下，对于mousemove事件回调的执行情况。<br><img src="https://gitee.com/qlHuo/BlogPic/raw/master/img/20201001115350.png" srcset="/img/loading.gif" lazyload alt="tupian"></p>
 <p>竖线的疏密代表事件执行的频繁程度。可以看到，正常情况下，竖线非常密集，函数执行很频繁。而 debounce （函数防抖）则很稀疏，只有当鼠标停止移动时，才会执行一次。throttle（函数节流）分布的较为均匀，每过一段时间就会执行一次。</p>
-<p>常见的应用场景<br>函数防抖（debounce）的应用场景<br>连续的事件，只需触发一次的回调场景有：</p>
+<h2 id="常见的应用场景"><a href="#常见的应用场景" class="headerlink" title="常见的应用场景"></a>常见的应用场景</h2><p>函数防抖（debounce）的应用场景<br>连续的事件，只需触发一次的回调场景有：</p>
 <p>搜索框搜索输入。只需要用户最后一次输入完再发送请求<br>手机号、邮箱格式的输入验证检测<br>窗口大小的 resize 。只需窗口调整完成后，计算窗口的大小，防止重复渲染。<br>函数节流（throttle）的应用场景<br>间隔一段时间执行一次回调的场景有：</p>
-<p>滚动加载，加载更多或滚动到底部监听<br>谷歌搜索框，搜索联想功能<br>高频点击提交，表单重复提交<br>省市信息对应字母快速选择<br>实现原理<br>函数防抖（debounce）<br>简单实现：</p>
+<p>滚动加载，加载更多或滚动到底部监听<br>谷歌搜索框，搜索联想功能<br>高频点击提交，表单重复提交<br>省市信息对应字母快速选择</p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>函数防抖（debounce）<br>简单实现：</p>
 <figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">const debounce =<span class="hljs-function"> (<span class="hljs-params">func</span>, <span class="hljs-params">wait</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">let</span> timer<br>    return<span class="hljs-function"> <span class="hljs-params">()</span> =&gt;</span> &#123;<br>		clear<span class="hljs-constructor">Timeout(<span class="hljs-params">timer</span>)</span><br>        timer = set<span class="hljs-constructor">Timeout(<span class="hljs-params">func</span>, <span class="hljs-params">wait</span>)</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>函数防抖在执行目标方法时，会等待一段时间。当又执行相同方法时，若前一个定时任务未执行完，则 清除掉定时任务，重新定时。</p>
 <p>封装：</p>
@@ -298,7 +299,7 @@
 <p>封装：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">throttle</span>(<span class="hljs-params">fn, delay</span>) &#123;<br>    <span class="hljs-keyword">let</span> timer = <span class="hljs-literal">null</span><br>    <br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">if</span> (timer) &#123;<br>            <span class="hljs-keyword">return</span><br>        &#125;<br>        timer = <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>            fn.<span class="hljs-title function_">apply</span>(<span class="hljs-variable language_">this</span>, <span class="hljs-variable language_">arguments</span>)<br>            timer = <span class="hljs-literal">null</span><br>        &#125;)<br>    &#125;<br>&#125;<br><span class="hljs-comment">// test</span><br><span class="hljs-keyword">let</span> div1 = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;div1&#x27;</span>)<br>div1.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;drag&#x27;</span>, <span class="hljs-title function_">throttle</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(e.<span class="hljs-property">offsetX</span>, e.<span class="hljs-property">offsetY</span>)<br>&#125;, <span class="hljs-number">100</span>))<br></code></pre></td></tr></table></figure>
 <p>解释：如果 timer 存在，那就直接返回，不再往下执行了。这样就实现了一段时间内执行一次的目的。</p>
-<p>异同比较<br>相同点：</p>
+<h2 id="异同比较"><a href="#异同比较" class="headerlink" title="异同比较"></a>异同比较</h2><p>相同点：</p>
 <p>都可以通过使用 setTimeout 实现<br>目的都是，降低回调函数的执行频率，节省计算资源<br>不同点：</p>
 <p>函数防抖，是在一段连续操作结束之后，处理回调，利用 clearTimout 和 setTimeout 实现。函数节流，是在一段连续操作中，每一段时间只执行一次，在频率较高的事件中使用来提高性能。<br>函数防抖关注一段时间内连续触发，只在最后一次执行；而函数节流侧重于在一段时间内只执行一次。</p>
 
