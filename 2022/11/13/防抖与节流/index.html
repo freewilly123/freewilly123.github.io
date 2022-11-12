@@ -16,22 +16,24 @@
   <meta name="author" content="Xin Lu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="[TOC] Setup Replica SetTo use change streams, we have to create replica set first. Convert a Standalone to a Replica Set Shut down the standalone mongod instance. Restart the instance. Use the –replSe">
+    <meta name="description" content="闭包的典型应用就是函数防抖和节流，本文详细介绍函数防抖和节流的应用场景和实现。 函数防抖（debounce）函数防抖，就是指触发事件后，在 n 秒后只能执行一次，如果在 n 秒内又触发了事件，则会重新计算函数的执行时间。 简单的说，当一个动作连续触发，只执行最后一次。 打个比方，坐公交，司机需要等最后一个人进入才能关门。每次进入一个人，司机就会多等待几秒再关门。 函数节流（throttle）限制一">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MongoDb Stream and replicaSet">
-<meta property="og:url" content="https://freewilly123.github.io/2022/10/24/MongoDb-Stream-and-replicaSet/index.html">
+<meta property="og:title" content="防抖与节流">
+<meta property="og:url" content="https://freewilly123.github.io/2022/11/13/%E9%98%B2%E6%8A%96%E4%B8%8E%E8%8A%82%E6%B5%81/index.html">
 <meta property="og:site_name" content="Xin&#39;s blog">
-<meta property="og:description" content="[TOC] Setup Replica SetTo use change streams, we have to create replica set first. Convert a Standalone to a Replica Set Shut down the standalone mongod instance. Restart the instance. Use the –replSe">
+<meta property="og:description" content="闭包的典型应用就是函数防抖和节流，本文详细介绍函数防抖和节流的应用场景和实现。 函数防抖（debounce）函数防抖，就是指触发事件后，在 n 秒后只能执行一次，如果在 n 秒内又触发了事件，则会重新计算函数的执行时间。 简单的说，当一个动作连续触发，只执行最后一次。 打个比方，坐公交，司机需要等最后一个人进入才能关门。每次进入一个人，司机就会多等待几秒再关门。 函数节流（throttle）限制一">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-10-24T15:01:30.000Z">
-<meta property="article:modified_time" content="2022-10-24T18:01:08.349Z">
+<meta property="og:image" content="https://gitee.com/qlHuo/BlogPic/raw/master/img/20201001115350.png">
+<meta property="article:published_time" content="2022-11-12T22:26:20.000Z">
+<meta property="article:modified_time" content="2022-11-12T22:37:00.276Z">
 <meta property="article:author" content="Xin Lu">
-<meta property="article:tag" content="Mongodb">
+<meta property="article:tag" content="JS">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://gitee.com/qlHuo/BlogPic/raw/master/img/20201001115350.png">
   
   
   
-  <title>MongoDb Stream and replicaSet - Xin&#39;s blog</title>
+  <title>防抖与节流 - Xin&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="MongoDb Stream and replicaSet"></span>
+            <span id="subtitle" data-typed-text="防抖与节流"></span>
           
         </div>
 
@@ -207,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-10-24 23:01" pubdate>
-          October 24, 2022 pm
+        <time datetime="2022-11-13 06:26" pubdate>
+          November 13, 2022 am
         </time>
       </span>
     
@@ -219,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.2k words
+          2.5k words
         
       </span>
     
@@ -230,7 +232,7 @@
         
         
         
-          11 mins
+          21 mins
         
       </span>
     
@@ -268,25 +270,37 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">MongoDb Stream and replicaSet</h1>
+            <h1 style="display: none">防抖与节流</h1>
             
             
               <div class="markdown-body">
                 
-                <p>[TOC]</p>
-<h1 id="Setup-Replica-Set"><a href="#Setup-Replica-Set" class="headerlink" title="Setup Replica Set"></a>Setup Replica Set</h1><p>To use change streams, we have to create replica set first.</p>
-<h2 id="Convert-a-Standalone-to-a-Replica-Set"><a href="#Convert-a-Standalone-to-a-Replica-Set" class="headerlink" title="Convert a Standalone to a Replica Set"></a>Convert a Standalone to a Replica Set</h2><ol>
-<li>Shut down the standalone mongod instance.</li>
-<li>Restart the instance. Use the –replSet option to specify the name of the new replica set.<pre><code class="hljs"> mongod --port 27017 --dbpath /data/db0(the standalone&#39;s existing database path) --replSet rs0(new replica set name)
-</code></pre>
-</li>
-<li>Connect mongosh to the mongod instance.</li>
-<li>Use rs.initiate() to initiate the new replica set:</li>
-<li>To add members to this replica set, use the rs.add(<a href="servername:port">servername:port</a>) method.<h2 id="Creating-a-New-MongoDB-Replica-Set"><a href="#Creating-a-New-MongoDB-Replica-Set" class="headerlink" title="Creating a New MongoDB Replica Set"></a>Creating a New MongoDB Replica Set</h2><a target="_blank" rel="noopener" href="https://hevodata.com/learn/mongodb-replication/#m1s1">https://hevodata.com/learn/mongodb-replication/#m1s1</a><br><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=gChzfhVGqp8">https://www.youtube.com/watch?v=gChzfhVGqp8</a></li>
-</ol>
-<h1 id="Change-Streams"><a href="#Change-Streams" class="headerlink" title="Change Streams"></a>Change Streams</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> mongo = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;mongodb&quot;</span>).<span class="hljs-property">MongoClient</span>;<br>mongo.<span class="hljs-title function_">connect</span>(<span class="hljs-string">&quot;mongodb://localhost:27017/?replicaSet=rs0&quot;</span>).<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">client</span> =&gt;</span> &#123;<br> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;Connected to MongoDB server&quot;</span>);<br> <span class="hljs-comment">// Select DB and Collection</span><br> <span class="hljs-keyword">const</span> db = client.<span class="hljs-title function_">db</span>(<span class="hljs-string">&quot;mydb&quot;</span>);<br> <span class="hljs-keyword">const</span> collection = db.<span class="hljs-title function_">collection</span>(<span class="hljs-string">&quot;Stocks&quot;</span>);<br> pipeline = [<br>   &#123;<br>     <span class="hljs-attr">$match</span>: &#123; <span class="hljs-string">&quot;fullDocument.price&quot;</span>: &#123; <span class="hljs-attr">$gte</span>: <span class="hljs-number">250</span> &#125; &#125;<br>   &#125;<br> ];<br> <span class="hljs-comment">// Define change stream</span><br> <span class="hljs-keyword">const</span> changeStream = collection.<span class="hljs-title function_">watch</span>(pipeline);<br> <span class="hljs-comment">// start listen to changes</span><br> changeStream.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;change&quot;</span>, <span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) &#123;<br>   <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(event));<br> &#125;);<br>&#125;);<br></code></pre></td></tr></table></figure>
-
-
+                <p>闭包的典型应用就是函数防抖和节流，本文详细介绍函数防抖和节流的应用场景和实现。</p>
+<p>函数防抖（debounce）<br>函数防抖，就是指触发事件后，在 n 秒后只能执行一次，如果在 n 秒内又触发了事件，则会重新计算函数的执行时间。</p>
+<p>简单的说，当一个动作连续触发，只执行最后一次。</p>
+<p>打个比方，坐公交，司机需要等最后一个人进入才能关门。每次进入一个人，司机就会多等待几秒再关门。</p>
+<p>函数节流（throttle）<br>限制一个函数在一定时间内只能执行一次</p>
+<p>举个例子，乘坐地铁，过闸机时，每个人进入后3秒后门关闭，等待下一个人进入。</p>
+<p>为了方便理解，我们首先通过一个可视化的工具，感受一下三种环境（正常情况、函数防抖情况 debounce、函数节流 throttle）下，对于mousemove事件回调的执行情况。<br><img src="https://gitee.com/qlHuo/BlogPic/raw/master/img/20201001115350.png" srcset="/img/loading.gif" lazyload alt="tupian"></p>
+<p>竖线的疏密代表事件执行的频繁程度。可以看到，正常情况下，竖线非常密集，函数执行很频繁。而 debounce （函数防抖）则很稀疏，只有当鼠标停止移动时，才会执行一次。throttle（函数节流）分布的较为均匀，每过一段时间就会执行一次。</p>
+<p>常见的应用场景<br>函数防抖（debounce）的应用场景<br>连续的事件，只需触发一次的回调场景有：</p>
+<p>搜索框搜索输入。只需要用户最后一次输入完再发送请求<br>手机号、邮箱格式的输入验证检测<br>窗口大小的 resize 。只需窗口调整完成后，计算窗口的大小，防止重复渲染。<br>函数节流（throttle）的应用场景<br>间隔一段时间执行一次回调的场景有：</p>
+<p>滚动加载，加载更多或滚动到底部监听<br>谷歌搜索框，搜索联想功能<br>高频点击提交，表单重复提交<br>省市信息对应字母快速选择<br>实现原理<br>函数防抖（debounce）<br>简单实现：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">const debounce =<span class="hljs-function"> (<span class="hljs-params">func</span>, <span class="hljs-params">wait</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">let</span> timer<br>    return<span class="hljs-function"> <span class="hljs-params">()</span> =&gt;</span> &#123;<br>		clear<span class="hljs-constructor">Timeout(<span class="hljs-params">timer</span>)</span><br>        timer = set<span class="hljs-constructor">Timeout(<span class="hljs-params">func</span>, <span class="hljs-params">wait</span>)</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>函数防抖在执行目标方法时，会等待一段时间。当又执行相同方法时，若前一个定时任务未执行完，则 清除掉定时任务，重新定时。</p>
+<p>封装：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">debounce</span>(<span class="hljs-params">fn, delay = <span class="hljs-number">500</span></span>) &#123;<br>    <span class="hljs-comment">// timer 是在闭包中的</span><br>    <span class="hljs-keyword">let</span> timer = <span class="hljs-literal">null</span>;<br>    <br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">if</span> (timer) &#123;<br>            <span class="hljs-built_in">clearTimeout</span>(timer)<br>        &#125;<br>        timer = <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>            fn.<span class="hljs-title function_">apply</span>(<span class="hljs-variable language_">this</span>, <span class="hljs-variable language_">arguments</span>)<br>            timer = <span class="hljs-literal">null</span><br>        &#125;, delay)<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">// test debounce 返回一个函数</span><br>input1 = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;input1&#x27;</span>)<br>input1.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;keyup&#x27;</span>, <span class="hljs-title function_">debounce</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(input1.<span class="hljs-property">value</span>)<br>&#125;, <span class="hljs-number">600</span>))<br><br></code></pre></td></tr></table></figure>
+<p>绑定事件解释：addEventListener 第一个参数是监听的事件，第二个参数是对应事件的回调函数。将 debounce 函数作为回调函数，这个 debounce 回调函数返回一个防抖之后的函数，因此实现了防抖的功能。</p>
+<p>防抖解释：当 按下某个键的时候触发 keydown 事件，并执行回调。timer 默认为 null，在 return 的函数中定时器 timer 被赋值，如果在 delay 延迟之内再次触发了 keydown 事件，那么 timer 就会被重置为null…，当用户输入完成之后（delay 时间已过），那么就会触发 debounce 中的回调函数，也就是 keydown 最终要执行的事件。</p>
+<p>函数节流（throttle）<br>简单实现</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript">const throttle = <span class="hljs-function"><span class="hljs-params">(func, wait)</span> =&gt;</span> &#123;<br>    let timer;<br>    <br>    <span class="hljs-keyword">return</span> () =&gt; &#123;<br>        <span class="hljs-keyword">if</span> (timer) &#123;<br>            <span class="hljs-keyword">return</span><br>        &#125;<br>        timer = <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;<br>            func();<br>            timer = <span class="hljs-literal">null</span><br>        &#125;, wait)<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>函数节流的目的，是为了限制函数一段时间内只能执行一次。因此，通过使用定时任务，延时方法执行。在延时的时间内，方法若被触发，则直接退出方法。从而实现一段时间内只执行一次。</p>
+<p>封装：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">throttle</span>(<span class="hljs-params">fn, delay</span>) &#123;<br>    <span class="hljs-keyword">let</span> timer = <span class="hljs-literal">null</span><br>    <br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">if</span> (timer) &#123;<br>            <span class="hljs-keyword">return</span><br>        &#125;<br>        timer = <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>            fn.<span class="hljs-title function_">apply</span>(<span class="hljs-variable language_">this</span>, <span class="hljs-variable language_">arguments</span>)<br>            timer = <span class="hljs-literal">null</span><br>        &#125;)<br>    &#125;<br>&#125;<br><span class="hljs-comment">// test</span><br><span class="hljs-keyword">let</span> div1 = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;div1&#x27;</span>)<br>div1.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;drag&#x27;</span>, <span class="hljs-title function_">throttle</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(e.<span class="hljs-property">offsetX</span>, e.<span class="hljs-property">offsetY</span>)<br>&#125;, <span class="hljs-number">100</span>))<br></code></pre></td></tr></table></figure>
+<p>解释：如果 timer 存在，那就直接返回，不再往下执行了。这样就实现了一段时间内执行一次的目的。</p>
+<p>异同比较<br>相同点：</p>
+<p>都可以通过使用 setTimeout 实现<br>目的都是，降低回调函数的执行频率，节省计算资源<br>不同点：</p>
+<p>函数防抖，是在一段连续操作结束之后，处理回调，利用 clearTimout 和 setTimeout 实现。函数节流，是在一段连续操作中，每一段时间只执行一次，在频率较高的事件中使用来提高性能。<br>函数防抖关注一段时间内连续触发，只在最后一次执行；而函数节流侧重于在一段时间内只执行一次。</p>
 
                 
               </div>
@@ -305,7 +319,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Mongodb/" class="category-chain-item">Mongodb</a>
+  <a href="/categories/JS/" class="category-chain-item">JS</a>
   
   
 
@@ -320,7 +334,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Mongodb/">#Mongodb</a>
+        <a href="/tags/JS/">#JS</a>
       
     </div>
   
@@ -332,8 +346,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>MongoDb Stream and replicaSet</div>
-      <div>https://freewilly123.github.io/2022/10/24/MongoDb-Stream-and-replicaSet/</div>
+      <div>防抖与节流</div>
+      <div>https://freewilly123.github.io/2022/11/13/防抖与节流/</div>
     </div>
     <div class="license-meta">
       
@@ -345,7 +359,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>October 24, 2022</div>
+          <div>November 13, 2022</div>
         </div>
       
       
@@ -377,18 +391,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/10/26/Redux-middleware-and-websocket/" title="Redux middleware and websocket">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Redux middleware and websocket</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/10/24/%E7%88%AC%E8%99%AB/" title="爬虫">
-                        <span class="hidden-mobile">爬虫</span>
+                      <a href="/2022/10/26/Redux-middleware-and-websocket/" title="Redux middleware and websocket">
+                        <span class="hidden-mobile">Redux middleware and websocket</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
