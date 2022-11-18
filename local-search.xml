@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>React</title>
+    <link href="/2022/11/18/React/"/>
+    <url>/2022/11/18/React/</url>
+    
+    <content type="html"><![CDATA[<!-- toc --><ul><li><a href="#React%25E5%258E%259F%25E7%2590%2586">React原理</a></li><li><a href="#React-Hooks">React Hooks</a></li><li><a href="#Ref%25E4%25BB%25A5%25E5%258F%258A%25E5%2585%25B6api">Ref以及其api</a><ul><li><a href="#api">api</a></li><li><a href="#%25E5%25AE%259E%25E7%258E%25B0%25E5%258E%259F%25E7%2590%2586">实现原理</a></li></ul></li><li><a href="#React%25E5%2590%2584%25E4%25B8%25AAhooks">React各个hooks</a><ul><li><a href="#useRef">useRef</a></li><li><a href="#useCallback">useCallback</a></li><li><a href="#useMemo">useMemo</a></li><li><a href="#useState">useState</a></li><li><a href="#useEffect">useEffect</a></li><li><a href="#%25E8%2587%25AA%25E5%25AE%259A%25E4%25B9%2589hook">自定义hook</a></li></ul></li></ul><!-- tocstop --><h2 id="React原理"><a href="#React原理" class="headerlink" title="React原理"></a>React原理</h2><p><img src="https://picd.zhimg.com/v2-b34e45694660cde582ec96716679440f_1440w.jpg?source=172ae18b" alt="render"><br>vdom 的结构是这样的：<br><img src="https://pic2.zhimg.com/v2-3064e122b898817c21ef9bc30592cd15_b.jpg" alt="vdom"><br><img src="https://pic4.zhimg.com/v2-26f03069b9bf35688403fe172177c5c7_b.jpg" alt="fiber节点"><br>通过 jsx 写的代码会编译成 render function，执行产生 vdom，也就是 React Element 对象的树。</p><p>react 分为 render 和 commit 两个阶段:</p><p>render 阶段会递归做 vdom 转 fiber，beginWork 里递归进行 reconcile、reconcileChildren，completeWork 里创建 dom，记录增删改等 tag 和其他 effect</p><p>commit 阶段遍历 effect 链表，做三轮处理，这三轮分别叫做 before mutation、mutation、layout，mutation 阶段会根据 tag 做 dom 增删改。</p><h2 id="React-Hooks"><a href="#React-Hooks" class="headerlink" title="React Hooks"></a>React Hooks</h2><p>函数组件内可以用 hooks 来存取一些值，这些值就是存在 fiber 节点上的。比如这个函数组件内用到了 6 个 hook：<br><img src="https://pic4.zhimg.com/v2-16692e450d5a1d196ec8a618a3123eb7_b.jpg"><br>那么对应的 fiber 节点上就有个 6 个元素的 memorizedState 链表：<br><img src="https://pic1.zhimg.com/v2-fbcc717c2823ad9f025e5b7b3b2f28f0_b.jpg"><br>通过 next 串联起来：不同的 hook 在 memorizedState 链表不同的元素上存取值，这就是 react hooks 的原理。<br><img src="https://pic1.zhimg.com/v2-57af9589a66296c473675f0c1633da4c_b.jpg"></p><p>hooks 的实现原理其实不复杂，就是在某个上下文中存放一个链表，然后 hooks api 从链表不同的元素上访问对应的数据来完成各自的逻辑。这个上下文可以是 vdom、fiber 甚至是全局变量。所以hook无法在条件语句里使用，是因为链表没有办法判断当前的节点是否需要执行.</p><h2 id="Ref以及其api"><a href="#Ref以及其api" class="headerlink" title="Ref以及其api"></a>Ref以及其api</h2><h3 id="api"><a href="#api" class="headerlink" title="api"></a>api</h3><ul><li>函数组件里用 useRef 创建 ref 变量，然后原生标签加个 ref 属性指向它</li><li>类组件里用 createRef 创建 ref 变量，保存到 this，然后原生标签加个 ref 属性指向它</li><li>子组件的 ref 传递给父组件，使用 forwarRef 包裹子组件，然后原生标签加个 ref 属性指向传进来的 ref 参数。</li><li>改变 ref 传递的值，使用 useImperativeHandle，第一个参数是 ref，第二个参数是返回 ref 值的函数</li></ul><h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>beginWork 处理到原生标签也就是 HostComponent 类型的时候，如果有 ref 属性会在 flags 里加一个标记。</p><p>completeWork 处理 fiber 节点的时候，flags 不是默认值的 fiber 节点会被记录到 effect 链表里，通过 firstEffect、lastEffefct、nextEffect 来记录这条链表。</p><p>commit 阶段会处理 effect 链表，在 mutation 阶段操作 dom 之前会清空 ref，在 layout 阶段会设置 ref，也就是把 fiber.stateNode 赋值给 ref.current。</p><p>react 并不关心 ref 是哪里创建的，用 createRef、useRef 创建的，或者 forwardRef 传过来的都行，甚至普通对象也可以，createRef、useRef 只是把普通对象 Object.seal 了一下。</p><p>forwarRef 是创建了单独的 vdom 类型，在 beginWork 处理到它的时候做了特殊处理，也就是把它的 ref 作为第二个参数传递给了函数组件，这就是它 ref 转发的原理。</p><p>useImperativeHandle 的底层实现就是 useEffect，只不过执行的函数是它指定的，bind 了传入的 ref 和 create 函数，这样在 layout 阶段调用 hook 的 effect 函数的时候就可以更新 ref 了。</p><h2 id="React各个hooks"><a href="#React各个hooks" class="headerlink" title="React各个hooks"></a>React各个hooks</h2><p>hooks 就是通过把数据挂载到组件对应的 fiber 节点上来实现的。<br>fiber 节点的 memorizedState 就是保存 hooks 数据的地方。<br>这就是 hooks 存取数据的地方，执行的时候各自在自己的那个 memorizedState 上存取数据，完成各种逻辑，这就是 hooks 的原理。</p><h3 id="useRef"><a href="#useRef" class="headerlink" title="useRef"></a>useRef</h3><p>每个 useXxx 的 hooks 都有 mountXxx 和 updateXxx 两个阶段，比如 ref 就是 mountRef 和 updateRef。</p><p>它的代码是最简单的，只有这么几行：<br><img src="https://pic4.zhimg.com/80/v2-ec4eb8095894999fa206af318cdb3623_1440w.webp"><br>mountWorkInProgressHook 刚才我们看过，就是创建并返回 memorizedState 链表的，同理，下面那个 updateWorkInProgressHook 是更新的。</p><p>这些不用管，只要知道修改的是对应的 memorizedState 链表中的元素就行了。</p><p>那 ref 在 memorizedState 上挂了什么呢？</p><p>可以看到是把传进来的 value 包装了一个有 current 属性的对象，冻结了一下，然后放在 memorizedState 属性上。</p><p>后面 update 的时候，没有做任何处理，直接返回这个对象。</p><p>所以，useRef 的功能就很容易猜到了：useRef 可以保存一个数据的引用，这个引用不可变。</p><h3 id="useCallback"><a href="#useCallback" class="headerlink" title="useCallback"></a>useCallback</h3><p>useCallback 在 memorizedState 上放了一个数组，第一个元素是传入的回调函数，第二个是传入的 deps（对 deps 做了下 undefined 的处理）。<br><img src="https://pic3.zhimg.com/80/v2-06e9785320841fd929cfee01968a061a_1440w.webp"><br>更新的时候把之前的那个 memorizedState 取出来，和新传入的 deps 做下对比，如果没变，那就返回之前的回调函数，也就是 prevState[0]。</p><p>如果变了，那就创建一个新的数组，第一个元素是传入的回调函数，第二个是传入的 deps。</p><p>所以，useCallback 的功能也就呼之欲出了：useCallback 可以实现函数的缓存，如果 deps 没变就不会创建新的，否则才会返回新传入的函数。</p><p>这段逻辑其实也不难，就是多了个判断逻辑。</p><p>再来看个和它差不多的：</p><h3 id="useMemo"><a href="#useMemo" class="headerlink" title="useMemo"></a>useMemo</h3><p>useMemo 也在 memorizedState 上放了个数组，第一个元素是传入函数的执行结果，第二个元素是 deps（对 deps 为 undefined 的情况做了下处理）。<br><img src="https://pic3.zhimg.com/80/v2-597b8df566d67fa1b181d3b5751c707e_1440w.webp"><br>更新的时候也是取出之前的 memorizedState，和新传入的 deps 做下对比，如果没变，就返回之前的值，也就是 prevState[0]。</p><p>如果变了，创建一个新的数组放在 memorizedState，第一个元素是新传入函数的执行结果，第二个元素是 deps。</p><p>所以，useMemo 的功能大家也能猜出来：useMemo 可以实现函数执行结果的缓存，如果 deps 没变，就直接拿之前的，否则才会执行函数拿到最新结果返回。</p><p>实现逻辑和 useCallback 大同小异。</p><h3 id="useState"><a href="#useState" class="headerlink" title="useState"></a>useState</h3><h3 id="useEffect"><a href="#useEffect" class="headerlink" title="useEffect"></a>useEffect</h3><h3 id="自定义hook"><a href="#自定义hook" class="headerlink" title="自定义hook"></a>自定义hook</h3><p>只不过一般我们会使用 React 提供的 eslint 插件，lint 了这些函数必须以 use 开头，但其实不用也没事，它们和普通的函数封装没有任何区别。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>React</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>React</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>防抖与节流</title>
     <link href="/2022/11/13/%E9%98%B2%E6%8A%96%E4%B8%8E%E8%8A%82%E6%B5%81/"/>
     <url>/2022/11/13/%E9%98%B2%E6%8A%96%E4%B8%8E%E8%8A%82%E6%B5%81/</url>

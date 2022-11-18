@@ -16,24 +16,32 @@
   <meta name="author" content="Xin Lu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="闭包的典型应用就是函数防抖和节流，本文详细介绍函数防抖和节流的应用场景和实现。 函数防抖（debounce）函数防抖，就是指触发事件后，在 n 秒后只能执行一次，如果在 n 秒内又触发了事件，则会重新计算函数的执行时间。 简单的说，当一个动作连续触发，只执行最后一次。 打个比方，坐公交，司机需要等最后一个人进入才能关门。每次进入一个人，司机就会多等待几秒再关门。 函数节流（throttle）限制一">
+    <meta name="description" content="React原理 React Hooks Ref以及其api api 实现原理   React各个hooks useRef useCallback useMemo useState useEffect 自定义hook      React原理vdom 的结构是这样的：通过 jsx 写的代码会编译成 render function，执行产生 vdom，也就是 React Element 对象的树">
 <meta property="og:type" content="article">
-<meta property="og:title" content="防抖与节流">
-<meta property="og:url" content="https://freewilly123.github.io/2022/11/13/%E9%98%B2%E6%8A%96%E4%B8%8E%E8%8A%82%E6%B5%81/index.html">
+<meta property="og:title" content="React">
+<meta property="og:url" content="https://freewilly123.github.io/2022/11/18/React/index.html">
 <meta property="og:site_name" content="Xin&#39;s blog">
-<meta property="og:description" content="闭包的典型应用就是函数防抖和节流，本文详细介绍函数防抖和节流的应用场景和实现。 函数防抖（debounce）函数防抖，就是指触发事件后，在 n 秒后只能执行一次，如果在 n 秒内又触发了事件，则会重新计算函数的执行时间。 简单的说，当一个动作连续触发，只执行最后一次。 打个比方，坐公交，司机需要等最后一个人进入才能关门。每次进入一个人，司机就会多等待几秒再关门。 函数节流（throttle）限制一">
+<meta property="og:description" content="React原理 React Hooks Ref以及其api api 实现原理   React各个hooks useRef useCallback useMemo useState useEffect 自定义hook      React原理vdom 的结构是这样的：通过 jsx 写的代码会编译成 render function，执行产生 vdom，也就是 React Element 对象的树">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://gitee.com/qlHuo/BlogPic/raw/master/img/20201001115350.png">
-<meta property="article:published_time" content="2022-11-12T22:26:20.000Z">
-<meta property="article:modified_time" content="2022-11-12T22:44:03.457Z">
+<meta property="og:image" content="https://picd.zhimg.com/v2-b34e45694660cde582ec96716679440f_1440w.jpg?source=172ae18b">
+<meta property="og:image" content="https://pic2.zhimg.com/v2-3064e122b898817c21ef9bc30592cd15_b.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/v2-26f03069b9bf35688403fe172177c5c7_b.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/v2-16692e450d5a1d196ec8a618a3123eb7_b.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-fbcc717c2823ad9f025e5b7b3b2f28f0_b.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-57af9589a66296c473675f0c1633da4c_b.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-ec4eb8095894999fa206af318cdb3623_1440w.webp">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-06e9785320841fd929cfee01968a061a_1440w.webp">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-597b8df566d67fa1b181d3b5751c707e_1440w.webp">
+<meta property="article:published_time" content="2022-11-18T15:22:47.000Z">
+<meta property="article:modified_time" content="2022-11-18T18:25:14.798Z">
 <meta property="article:author" content="Xin Lu">
-<meta property="article:tag" content="JS">
+<meta property="article:tag" content="React">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://gitee.com/qlHuo/BlogPic/raw/master/img/20201001115350.png">
+<meta name="twitter:image" content="https://picd.zhimg.com/v2-b34e45694660cde582ec96716679440f_1440w.jpg?source=172ae18b">
   
   
   
-  <title>防抖与节流 - Xin&#39;s blog</title>
+  <title>React - Xin&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -198,7 +206,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="防抖与节流"></span>
+            <span id="subtitle" data-typed-text="React"></span>
           
         </div>
 
@@ -209,8 +217,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-11-13 06:26" pubdate>
-          November 13, 2022 am
+        <time datetime="2022-11-18 23:22" pubdate>
+          November 18, 2022 pm
         </time>
       </span>
     
@@ -221,7 +229,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.5k words
+          2.7k words
         
       </span>
     
@@ -232,7 +240,7 @@
         
         
         
-          21 mins
+          23 mins
         
       </span>
     
@@ -270,38 +278,69 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">防抖与节流</h1>
+            <h1 style="display: none">React</h1>
             
             
               <div class="markdown-body">
                 
-                <p>闭包的典型应用就是函数防抖和节流，本文详细介绍函数防抖和节流的应用场景和实现。</p>
-<h2 id="函数防抖（debounce）"><a href="#函数防抖（debounce）" class="headerlink" title="函数防抖（debounce）"></a>函数防抖（debounce）</h2><p>函数防抖，就是指触发事件后，在 n 秒后只能执行一次，如果在 n 秒内又触发了事件，则会重新计算函数的执行时间。</p>
-<p>简单的说，当一个动作连续触发，只执行最后一次。</p>
-<p>打个比方，坐公交，司机需要等最后一个人进入才能关门。每次进入一个人，司机就会多等待几秒再关门。</p>
-<h2 id="函数节流（throttle）"><a href="#函数节流（throttle）" class="headerlink" title="函数节流（throttle）"></a>函数节流（throttle）</h2><p>限制一个函数在一定时间内只能执行一次</p>
-<p>举个例子，乘坐地铁，过闸机时，每个人进入后3秒后门关闭，等待下一个人进入。</p>
-<p>为了方便理解，我们首先通过一个可视化的工具，感受一下三种环境（正常情况、函数防抖情况 debounce、函数节流 throttle）下，对于mousemove事件回调的执行情况。<br><img src="https://gitee.com/qlHuo/BlogPic/raw/master/img/20201001115350.png" srcset="/img/loading.gif" lazyload alt="tupian"></p>
-<p>竖线的疏密代表事件执行的频繁程度。可以看到，正常情况下，竖线非常密集，函数执行很频繁。而 debounce （函数防抖）则很稀疏，只有当鼠标停止移动时，才会执行一次。throttle（函数节流）分布的较为均匀，每过一段时间就会执行一次。</p>
-<h2 id="常见的应用场景"><a href="#常见的应用场景" class="headerlink" title="常见的应用场景"></a>常见的应用场景</h2><p>函数防抖（debounce）的应用场景<br>连续的事件，只需触发一次的回调场景有：</p>
-<p>搜索框搜索输入。只需要用户最后一次输入完再发送请求<br>手机号、邮箱格式的输入验证检测<br>窗口大小的 resize 。只需窗口调整完成后，计算窗口的大小，防止重复渲染。<br>函数节流（throttle）的应用场景<br>间隔一段时间执行一次回调的场景有：</p>
-<p>滚动加载，加载更多或滚动到底部监听<br>谷歌搜索框，搜索联想功能<br>高频点击提交，表单重复提交<br>省市信息对应字母快速选择</p>
-<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>函数防抖（debounce）<br>简单实现：</p>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">const debounce =<span class="hljs-function"> (<span class="hljs-params">func</span>, <span class="hljs-params">wait</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">let</span> timer<br>    return<span class="hljs-function"> <span class="hljs-params">()</span> =&gt;</span> &#123;<br>		clear<span class="hljs-constructor">Timeout(<span class="hljs-params">timer</span>)</span><br>        timer = set<span class="hljs-constructor">Timeout(<span class="hljs-params">func</span>, <span class="hljs-params">wait</span>)</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>函数防抖在执行目标方法时，会等待一段时间。当又执行相同方法时，若前一个定时任务未执行完，则 清除掉定时任务，重新定时。</p>
-<p>封装：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">debounce</span>(<span class="hljs-params">fn, delay = <span class="hljs-number">500</span></span>) &#123;<br>    <span class="hljs-comment">// timer 是在闭包中的</span><br>    <span class="hljs-keyword">let</span> timer = <span class="hljs-literal">null</span>;<br>    <br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">if</span> (timer) &#123;<br>            <span class="hljs-built_in">clearTimeout</span>(timer)<br>        &#125;<br>        timer = <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>            fn.<span class="hljs-title function_">apply</span>(<span class="hljs-variable language_">this</span>, <span class="hljs-variable language_">arguments</span>)<br>            timer = <span class="hljs-literal">null</span><br>        &#125;, delay)<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">// test debounce 返回一个函数</span><br>input1 = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;input1&#x27;</span>)<br>input1.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;keyup&#x27;</span>, <span class="hljs-title function_">debounce</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(input1.<span class="hljs-property">value</span>)<br>&#125;, <span class="hljs-number">600</span>))<br><br></code></pre></td></tr></table></figure>
-<p>绑定事件解释：addEventListener 第一个参数是监听的事件，第二个参数是对应事件的回调函数。将 debounce 函数作为回调函数，这个 debounce 回调函数返回一个防抖之后的函数，因此实现了防抖的功能。</p>
-<p>防抖解释：当 按下某个键的时候触发 keydown 事件，并执行回调。timer 默认为 null，在 return 的函数中定时器 timer 被赋值，如果在 delay 延迟之内再次触发了 keydown 事件，那么 timer 就会被重置为null…，当用户输入完成之后（delay 时间已过），那么就会触发 debounce 中的回调函数，也就是 keydown 最终要执行的事件。</p>
-<p>函数节流（throttle）<br>简单实现</p>
-<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript">const throttle = <span class="hljs-function"><span class="hljs-params">(func, wait)</span> =&gt;</span> &#123;<br>    let timer;<br>    <br>    <span class="hljs-keyword">return</span> () =&gt; &#123;<br>        <span class="hljs-keyword">if</span> (timer) &#123;<br>            <span class="hljs-keyword">return</span><br>        &#125;<br>        timer = <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;<br>            func();<br>            timer = <span class="hljs-literal">null</span><br>        &#125;, wait)<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>函数节流的目的，是为了限制函数一段时间内只能执行一次。因此，通过使用定时任务，延时方法执行。在延时的时间内，方法若被触发，则直接退出方法。从而实现一段时间内只执行一次。</p>
-<p>封装：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">throttle</span>(<span class="hljs-params">fn, delay</span>) &#123;<br>    <span class="hljs-keyword">let</span> timer = <span class="hljs-literal">null</span><br>    <br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">if</span> (timer) &#123;<br>            <span class="hljs-keyword">return</span><br>        &#125;<br>        timer = <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>            fn.<span class="hljs-title function_">apply</span>(<span class="hljs-variable language_">this</span>, <span class="hljs-variable language_">arguments</span>)<br>            timer = <span class="hljs-literal">null</span><br>        &#125;)<br>    &#125;<br>&#125;<br><span class="hljs-comment">// test</span><br><span class="hljs-keyword">let</span> div1 = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;div1&#x27;</span>)<br>div1.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;drag&#x27;</span>, <span class="hljs-title function_">throttle</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(e.<span class="hljs-property">offsetX</span>, e.<span class="hljs-property">offsetY</span>)<br>&#125;, <span class="hljs-number">100</span>))<br></code></pre></td></tr></table></figure>
-<p>解释：如果 timer 存在，那就直接返回，不再往下执行了。这样就实现了一段时间内执行一次的目的。</p>
-<h2 id="异同比较"><a href="#异同比较" class="headerlink" title="异同比较"></a>异同比较</h2><p>相同点：</p>
-<p>都可以通过使用 setTimeout 实现<br>目的都是，降低回调函数的执行频率，节省计算资源<br>不同点：</p>
-<p>函数防抖，是在一段连续操作结束之后，处理回调，利用 clearTimout 和 setTimeout 实现。函数节流，是在一段连续操作中，每一段时间只执行一次，在频率较高的事件中使用来提高性能。<br>函数防抖关注一段时间内连续触发，只在最后一次执行；而函数节流侧重于在一段时间内只执行一次。</p>
+                <!-- toc -->
+
+<ul>
+<li><a href="#React%25E5%258E%259F%25E7%2590%2586">React原理</a></li>
+<li><a href="#React-Hooks">React Hooks</a></li>
+<li><a href="#Ref%25E4%25BB%25A5%25E5%258F%258A%25E5%2585%25B6api">Ref以及其api</a><ul>
+<li><a href="#api">api</a></li>
+<li><a href="#%25E5%25AE%259E%25E7%258E%25B0%25E5%258E%259F%25E7%2590%2586">实现原理</a></li>
+</ul>
+</li>
+<li><a href="#React%25E5%2590%2584%25E4%25B8%25AAhooks">React各个hooks</a><ul>
+<li><a href="#useRef">useRef</a></li>
+<li><a href="#useCallback">useCallback</a></li>
+<li><a href="#useMemo">useMemo</a></li>
+<li><a href="#useState">useState</a></li>
+<li><a href="#useEffect">useEffect</a></li>
+<li><a href="#%25E8%2587%25AA%25E5%25AE%259A%25E4%25B9%2589hook">自定义hook</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+
+<h2 id="React原理"><a href="#React原理" class="headerlink" title="React原理"></a>React原理</h2><p><img src="https://picd.zhimg.com/v2-b34e45694660cde582ec96716679440f_1440w.jpg?source=172ae18b" srcset="/img/loading.gif" lazyload alt="render"><br>vdom 的结构是这样的：<br><img src="https://pic2.zhimg.com/v2-3064e122b898817c21ef9bc30592cd15_b.jpg" srcset="/img/loading.gif" lazyload alt="vdom"><br><img src="https://pic4.zhimg.com/v2-26f03069b9bf35688403fe172177c5c7_b.jpg" srcset="/img/loading.gif" lazyload alt="fiber节点"><br>通过 jsx 写的代码会编译成 render function，执行产生 vdom，也就是 React Element 对象的树。</p>
+<p>react 分为 render 和 commit 两个阶段:</p>
+<p>render 阶段会递归做 vdom 转 fiber，beginWork 里递归进行 reconcile、reconcileChildren，completeWork 里创建 dom，记录增删改等 tag 和其他 effect</p>
+<p>commit 阶段遍历 effect 链表，做三轮处理，这三轮分别叫做 before mutation、mutation、layout，mutation 阶段会根据 tag 做 dom 增删改。</p>
+<h2 id="React-Hooks"><a href="#React-Hooks" class="headerlink" title="React Hooks"></a>React Hooks</h2><p>函数组件内可以用 hooks 来存取一些值，这些值就是存在 fiber 节点上的。比如这个函数组件内用到了 6 个 hook：<br><img src="https://pic4.zhimg.com/v2-16692e450d5a1d196ec8a618a3123eb7_b.jpg" srcset="/img/loading.gif" lazyload><br>那么对应的 fiber 节点上就有个 6 个元素的 memorizedState 链表：<br><img src="https://pic1.zhimg.com/v2-fbcc717c2823ad9f025e5b7b3b2f28f0_b.jpg" srcset="/img/loading.gif" lazyload><br>通过 next 串联起来：不同的 hook 在 memorizedState 链表不同的元素上存取值，这就是 react hooks 的原理。<br><img src="https://pic1.zhimg.com/v2-57af9589a66296c473675f0c1633da4c_b.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>hooks 的实现原理其实不复杂，就是在某个上下文中存放一个链表，然后 hooks api 从链表不同的元素上访问对应的数据来完成各自的逻辑。这个上下文可以是 vdom、fiber 甚至是全局变量。所以hook无法在条件语句里使用，是因为链表没有办法判断当前的节点是否需要执行.</p>
+<h2 id="Ref以及其api"><a href="#Ref以及其api" class="headerlink" title="Ref以及其api"></a>Ref以及其api</h2><h3 id="api"><a href="#api" class="headerlink" title="api"></a>api</h3><ul>
+<li>函数组件里用 useRef 创建 ref 变量，然后原生标签加个 ref 属性指向它</li>
+<li>类组件里用 createRef 创建 ref 变量，保存到 this，然后原生标签加个 ref 属性指向它</li>
+<li>子组件的 ref 传递给父组件，使用 forwarRef 包裹子组件，然后原生标签加个 ref 属性指向传进来的 ref 参数。</li>
+<li>改变 ref 传递的值，使用 useImperativeHandle，第一个参数是 ref，第二个参数是返回 ref 值的函数</li>
+</ul>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>beginWork 处理到原生标签也就是 HostComponent 类型的时候，如果有 ref 属性会在 flags 里加一个标记。</p>
+<p>completeWork 处理 fiber 节点的时候，flags 不是默认值的 fiber 节点会被记录到 effect 链表里，通过 firstEffect、lastEffefct、nextEffect 来记录这条链表。</p>
+<p>commit 阶段会处理 effect 链表，在 mutation 阶段操作 dom 之前会清空 ref，在 layout 阶段会设置 ref，也就是把 fiber.stateNode 赋值给 ref.current。</p>
+<p>react 并不关心 ref 是哪里创建的，用 createRef、useRef 创建的，或者 forwardRef 传过来的都行，甚至普通对象也可以，createRef、useRef 只是把普通对象 Object.seal 了一下。</p>
+<p>forwarRef 是创建了单独的 vdom 类型，在 beginWork 处理到它的时候做了特殊处理，也就是把它的 ref 作为第二个参数传递给了函数组件，这就是它 ref 转发的原理。</p>
+<p>useImperativeHandle 的底层实现就是 useEffect，只不过执行的函数是它指定的，bind 了传入的 ref 和 create 函数，这样在 layout 阶段调用 hook 的 effect 函数的时候就可以更新 ref 了。</p>
+<h2 id="React各个hooks"><a href="#React各个hooks" class="headerlink" title="React各个hooks"></a>React各个hooks</h2><p>hooks 就是通过把数据挂载到组件对应的 fiber 节点上来实现的。<br>fiber 节点的 memorizedState 就是保存 hooks 数据的地方。<br>这就是 hooks 存取数据的地方，执行的时候各自在自己的那个 memorizedState 上存取数据，完成各种逻辑，这就是 hooks 的原理。</p>
+<h3 id="useRef"><a href="#useRef" class="headerlink" title="useRef"></a>useRef</h3><p>每个 useXxx 的 hooks 都有 mountXxx 和 updateXxx 两个阶段，比如 ref 就是 mountRef 和 updateRef。</p>
+<p>它的代码是最简单的，只有这么几行：<br><img src="https://pic4.zhimg.com/80/v2-ec4eb8095894999fa206af318cdb3623_1440w.webp" srcset="/img/loading.gif" lazyload><br>mountWorkInProgressHook 刚才我们看过，就是创建并返回 memorizedState 链表的，同理，下面那个 updateWorkInProgressHook 是更新的。</p>
+<p>这些不用管，只要知道修改的是对应的 memorizedState 链表中的元素就行了。</p>
+<p>那 ref 在 memorizedState 上挂了什么呢？</p>
+<p>可以看到是把传进来的 value 包装了一个有 current 属性的对象，冻结了一下，然后放在 memorizedState 属性上。</p>
+<p>后面 update 的时候，没有做任何处理，直接返回这个对象。</p>
+<p>所以，useRef 的功能就很容易猜到了：useRef 可以保存一个数据的引用，这个引用不可变。</p>
+<h3 id="useCallback"><a href="#useCallback" class="headerlink" title="useCallback"></a>useCallback</h3><p>useCallback 在 memorizedState 上放了一个数组，第一个元素是传入的回调函数，第二个是传入的 deps（对 deps 做了下 undefined 的处理）。<br><img src="https://pic3.zhimg.com/80/v2-06e9785320841fd929cfee01968a061a_1440w.webp" srcset="/img/loading.gif" lazyload><br>更新的时候把之前的那个 memorizedState 取出来，和新传入的 deps 做下对比，如果没变，那就返回之前的回调函数，也就是 prevState[0]。</p>
+<p>如果变了，那就创建一个新的数组，第一个元素是传入的回调函数，第二个是传入的 deps。</p>
+<p>所以，useCallback 的功能也就呼之欲出了：useCallback 可以实现函数的缓存，如果 deps 没变就不会创建新的，否则才会返回新传入的函数。</p>
+<p>这段逻辑其实也不难，就是多了个判断逻辑。</p>
+<p>再来看个和它差不多的：</p>
+<h3 id="useMemo"><a href="#useMemo" class="headerlink" title="useMemo"></a>useMemo</h3><p>useMemo 也在 memorizedState 上放了个数组，第一个元素是传入函数的执行结果，第二个元素是 deps（对 deps 为 undefined 的情况做了下处理）。<br><img src="https://pic3.zhimg.com/80/v2-597b8df566d67fa1b181d3b5751c707e_1440w.webp" srcset="/img/loading.gif" lazyload><br>更新的时候也是取出之前的 memorizedState，和新传入的 deps 做下对比，如果没变，就返回之前的值，也就是 prevState[0]。</p>
+<p>如果变了，创建一个新的数组放在 memorizedState，第一个元素是新传入函数的执行结果，第二个元素是 deps。</p>
+<p>所以，useMemo 的功能大家也能猜出来：useMemo 可以实现函数执行结果的缓存，如果 deps 没变，就直接拿之前的，否则才会执行函数拿到最新结果返回。</p>
+<p>实现逻辑和 useCallback 大同小异。</p>
+<h3 id="useState"><a href="#useState" class="headerlink" title="useState"></a>useState</h3><h3 id="useEffect"><a href="#useEffect" class="headerlink" title="useEffect"></a>useEffect</h3><h3 id="自定义hook"><a href="#自定义hook" class="headerlink" title="自定义hook"></a>自定义hook</h3><p>只不过一般我们会使用 React 提供的 eslint 插件，lint 了这些函数必须以 use 开头，但其实不用也没事，它们和普通的函数封装没有任何区别。</p>
 
                 
               </div>
@@ -320,7 +359,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/JS/" class="category-chain-item">JS</a>
+  <a href="/categories/React/" class="category-chain-item">React</a>
   
   
 
@@ -335,7 +374,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/JS/">#JS</a>
+        <a href="/tags/React/">#React</a>
       
     </div>
   
@@ -347,8 +386,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>防抖与节流</div>
-      <div>https://freewilly123.github.io/2022/11/13/防抖与节流/</div>
+      <div>React</div>
+      <div>https://freewilly123.github.io/2022/11/18/React/</div>
     </div>
     <div class="license-meta">
       
@@ -360,7 +399,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>November 13, 2022</div>
+          <div>November 18, 2022</div>
         </div>
       
       
@@ -392,18 +431,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/11/18/React/" title="React">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">React</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/10/26/Redux-middleware-and-websocket/" title="Redux middleware and websocket">
-                        <span class="hidden-mobile">Redux middleware and websocket</span>
+                      <a href="/2022/11/13/%E9%98%B2%E6%8A%96%E4%B8%8E%E8%8A%82%E6%B5%81/" title="防抖与节流">
+                        <span class="hidden-mobile">防抖与节流</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
